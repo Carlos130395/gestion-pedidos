@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  app:
+    image: gestion_pedidos_app:latest
+    container_name: gestion_pedidos_app
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - mongodb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gestion_pedidos
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Indeci2024
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/gestion_pedidos_mongo
+    networks:
+      - gestion_pedidos_network
+
+  postgres:
+    image: postgres:16
+    container_name: gestion_pedidos_postgres
+    environment:
+      POSTGRES_DB: gestion_pedidos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Indeci2024
+    ports:
+      - "5432:5432"
+    networks:
+      - gestion_pedidos_network
+
+  mongodb:
+    image: mongo:5.0
+    container_name: gestion_pedidos_mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - gestion_pedidos_network
+
+networks:
+  gestion_pedidos_network:
+    driver: bridge
